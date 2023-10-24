@@ -9,5 +9,4 @@ public class JavaApiResTfulApplication {
     public static void main(String[] args) {
         SpringApplication.run(JavaApiResTfulApplication.class, args);
     }
-
 }
