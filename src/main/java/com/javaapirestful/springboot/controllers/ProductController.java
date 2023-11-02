@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class ProductController {
@@ -26,5 +28,39 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));
     }
 
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Object> updateProduct(@PathVariable(value = "id") UUID id,
+                                               @RequestBody @Valid ProductRecordDto productRecordDto){
+        Optional<ProductModel> hasObject = productRepository.findById(id);
+        if(hasObject.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado!");
+        }
+        var product = hasObject.get();
+        BeanUtils.copyProperties(productRecordDto, product);
+        return ResponseEntity.status(HttpStatus.OK).body(productRepository.save(product));
+    }
 
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") UUID id){
+        Optional<ProductModel> hasObject = productRepository.findById(id);
+        if(hasObject.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado ou já excluído");
+        }
+        productRepository.delete(hasObject.get());
+        return ResponseEntity.status(HttpStatus.FOUND).body("O produto foi deletado");
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductModel>> getAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(productRepository.findAll());
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Object> getOne(@PathVariable(value = "id") UUID id){
+        Optional<ProductModel> hasObject = productRepository.findById(id);
+        if(hasObject.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado!");
+        }
+        return ResponseEntity.status(HttpStatus.FOUND).body(hasObject.get());
+    }
 }
