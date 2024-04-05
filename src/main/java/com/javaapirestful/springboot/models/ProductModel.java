@@ -8,11 +8,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tb_products")
-//Em Java, a interface Serializable
-// é usada para marcar classes cujas instâncias podem ser convertidas
-// em sequências de bytes.
-// Isso é útil quando você precisa serializar objetos para armazená-los em arquivos,
-// enviar pela rede ou armazená-los em banco de dados.
 public class ProductModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
